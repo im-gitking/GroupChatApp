@@ -12,16 +12,24 @@ app.use(cors());
 // Required Paths
 const sequelize = require('./util/database');
 const userRoutes = require('./routes/userRoutes');
+const chatRoutes = require('./routes/chatRoutes');
 
 const pagesRoutes = require('./routes/pagesRoutes');
 
+// Models
+const User = require('./models/user');
+const Message = require('./models/message');
+
 // API Routing
 app.use('/user', userRoutes);
+app.use('/chat', chatRoutes);
 
 // Pages Routing
 app.use('/', pagesRoutes);
 
 // DB associations
+User.hasMany(Message);
+Message.belongsTo(User);
 
 // DB & server start
 sequelize

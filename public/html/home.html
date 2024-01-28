@@ -1,11 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - Group Chat App</title>
 </head>
+
 <body>
     <h1>Chat App</h1>
+
+    <div class="showMessage"></div>
+
+    <form action="/" class="chatForm">
+        <label for="message">Type Message:</label>
+        <input type="text" name="message" id="message" required>
+
+        <input type="submit" value="Send" id="sendBtn">
+    </form>
 </body>
+<script src="../js/chat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
+
 </html>
