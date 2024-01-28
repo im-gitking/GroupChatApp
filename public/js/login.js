@@ -11,10 +11,10 @@ async function loginSubmit(e) {
             email: email.value,
             password: password.value
         });
-        // console.log(signupSubmitedData.data);
+        // console.log(loginSubmitedData.data);
         localStorage.setItem('token', loginSubmitedData.data.token);
         if (!alert(loginSubmitedData.data.message)) {
-            window.location.href = 'addExpense.html';
+            window.location.href = '/home';
         }
     }
     catch (err) {

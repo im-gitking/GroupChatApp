@@ -10,6 +10,7 @@ const pagesController = require('../controller/pages');
 // router.get('/signup', pagesController.signupPage);
 router.get('/signup', pagesController.pageSender);
 router.get('/login', pagesController.pageSender);
+router.get('/home', pagesController.pageSender);
 
 // For JS, CSS Pages
 router.use('/js', pagesController.helperJsPages);
