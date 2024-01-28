@@ -28,8 +28,8 @@ app.use('/chat', chatRoutes);
 app.use('/', pagesRoutes);
 
 // DB associations
-User.hasMany(Message);
-Message.belongsTo(User);
+User.hasMany(Message, { foreignKey: 'userId' });
+Message.belongsTo(User, { foreignKey: 'userId' });
 
 // DB & server start
 sequelize
