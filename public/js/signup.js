@@ -12,18 +12,18 @@ async function signupSubmit(e) {
         const signupSubmitedData = await axios.post(`http://localhost:3000/user/signup`, {
             name: name.value,
             email: email.value,
-            password: password.value
+            password: password.value,
             number: number.value
         });
-        // console.log(signupSubmitedData.data);
+        console.log(signupSubmitedData.data);
         if (!alert(signupSubmitedData.data.message)) {
-            window.location.href = 'login.html';
+            window.location.href = '/login';
         }
 
     }
     catch (err) {
         if (err.response.status === 302) {
-            // console.log(err.response.data.message);
+            console.log(err.response.data.message);
             if (!alert(err.response.data.message)) {
                 location.reload();
             }

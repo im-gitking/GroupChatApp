@@ -1,7 +1,7 @@
-const Users = require('../models/users');
+const Users = require('../models/user');
 const bcrypt = require('bcrypt');
 
-exports.signupController = (req, res, next) => {
+exports.signup = (req, res, next) => {
     const data = req.body;
     console.log(data.email);
     Users.findAll({ where: { email: data.email } })

@@ -21,7 +21,7 @@ const Users = sequelize.define('user', {
         allowNull: false
     },
     number: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.BIGINT,
         allowNull: false
     }
 });
