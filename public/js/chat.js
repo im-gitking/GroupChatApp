@@ -3,6 +3,9 @@ const chatForm = document.querySelector('.chatForm');
 const messageText = document.querySelector('#message');
 const showMessage = document.querySelector('.showMessage');
 
+let totalMsg = 0;
+let lastMsgId = 0;
+
 const displayMessages = (obj) => {
     // JWT Decode function
     const parseJwt = (token) => {
@@ -28,21 +31,34 @@ const displayMessages = (obj) => {
 // Display All Messages
 document.addEventListener('DOMContentLoaded', getmsgs);
 async function getmsgs(e) {
-    setInterval(async () => {
-        showMessage.innerHTML = '';
-        try {
+    try {
+        if (localStorage.getItem('savedMsg') === '') {
             const AllTextMessages = await axios.get(`http://localhost:3000/chat/getText`, { headers: { Authorization: token } });
             displayMessages(AllTextMessages.data);
-        } catch (err) {
-            console.error('Error Caught: ', err);
+
+            const newMessages = JSON.stringify(AllTextMessages.data);
+            localStorage.setItem('savedMsg', newMessages)
         }
-    }, 1000);
+        else {
+            const oldMessages = JSON.parse(localStorage.getItem('savedMsg'));
+            displayMessages(oldMessages);
+        }
+
+        setInterval(async () => {
+            showMessage.innerHTML = '';
+            try {
+                const AllTextMessages = await axios.get(`http://localhost:3000/chat/realTime`, { headers: { Authorization: token } });
+                displayMessages(AllTextMessages.data);
+            } catch (err) {
+                console.error('Error Caught: ', err);
+            }
+        }, 1000);
+
+    } catch (err) {
+        console.error('Error Caught: ', err);
+    }
+    
 }
-/*setInterval(() => {
-    showMessage.innerHTML = '';
-    getmsgs();
-    console.log(1234);
-}, 1000);*/
 
 // Post Text Message
 chatForm.addEventListener('submit', sendMessage);

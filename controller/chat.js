@@ -52,6 +52,9 @@ exports.getMessage = async (req, res, next) => {
     }
 }
 
+exports.newMessage = (req, res, next) => {
+
+}
 
 exports.delteMessage = (req, res, next) => {
 
