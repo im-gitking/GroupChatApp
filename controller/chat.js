@@ -10,7 +10,12 @@ exports.postTextMessage = async (req, res, next) => {
         const savedTextMsg = await req.user.createMessage(textMessage, { transaction: t });
 
         await t.commit();
-        res.status(200).json({ msgText: savedTextMsg.message });
+        res.status(200).json([
+            {
+                id:savedTextMsg.userId,
+                textmsg: savedTextMsg.message
+            }
+        ]);
     }
     catch (err) {
         await t.rollback();
@@ -21,24 +26,24 @@ exports.postTextMessage = async (req, res, next) => {
 exports.getMessage = async (req, res, next) => {
     const t = await sequelize.transaction();
     try {
-        const getAllTextMessages = await Message.findAll();
+        const getAllTextMessages = await Message.findAll({
+            include: [{
+                model: User,
+                as: 'user'
+            }]
+        }, { transaction: t });
 
         const messageObj = [];
-        for (const msg of getAllTextMessages) {
-            try {
-                const user = await User.findOne({ where: { id: msg.userId } });
+        getAllTextMessages.forEach(msg => {
+            messageObj.push({
+                id:msg.userId,
+                from: msg.user.name,
+                textmsg: msg.message
+            });
+        });
+        // console.log(messageObj);
 
-                messageObj.push({
-                    from: user.name,
-                    textmsg: msg.message
-                });
-            }
-            catch (err) {
-                await t.rollback();
-                console.error('Error Caught: ', err);
-            }
-        }
-        console.log(messageObj);
+        await t.commit();
         res.status(200).json(messageObj);
     }
     catch (err) {
