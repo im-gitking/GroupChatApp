@@ -19,6 +19,8 @@ const pagesRoutes = require('./routes/pagesRoutes');
 // Models
 const User = require('./models/user');
 const Message = require('./models/message');
+const Member = require('./models/member');
+const Group = require('./models/group');
 
 // API Routing
 app.use((req, res, next) => {
@@ -35,6 +37,15 @@ app.use('/', pagesRoutes);
 // DB associations
 User.hasMany(Message, { foreignKey: 'userId' });
 Message.belongsTo(User, { foreignKey: 'userId' });
+
+Group.hasMany(Message, { foreignKey: 'groupId' });
+Message.belongsTo(Group, { foreignKey: 'groupId' });
+
+Group.hasMany(Member, { foreignKey: 'groupId' });
+Member.belongsTo(Group, { foreignKey: 'groupId' });
+
+User.hasOne(Member, { foreignKey: 'userId'});
+Member.belongsTo(User, { foreignKey: 'userId'});
 
 // DB & server start
 sequelize

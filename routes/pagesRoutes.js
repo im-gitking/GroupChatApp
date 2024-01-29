@@ -11,6 +11,7 @@ const pagesController = require('../controller/pages');
 router.get('/signup', pagesController.pageSender);
 router.get('/login', pagesController.pageSender);
 router.get('/home', pagesController.pageSender);
+router.get('/group', pagesController.pageSender);
 
 // For JS, CSS Pages
 router.use('/js', pagesController.helperJsPages);

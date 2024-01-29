@@ -1,0 +1,54 @@
+<!-- 
+- Gorup Template - Show message, Joind Groups list
+    - Use same JS of Home
+    + Join js
+- Group Create Page
+- Create Group Table
+    - id, name, invite link, memberCount, userId
+- Message Table
+    - id, text, groupId, userId
+- Member Table
+    - id, rank, groupId, userId 
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Name - Group Chat App</title>
+</head>
+
+<body>
+    <main>
+        <div class="createGroup">
+            <button>Create Group</button>
+
+            <div class="newGroup"></div>
+        </div>
+        <div class="groupDetails">
+            <div class="groupName"></div>
+            <div class="groupMembersCount"></div>
+
+            <div class="showMessage"></div>
+        </div>
+        <div class="messageForm">
+            <form action="/" class="chatForm">
+                <label for="message">Type Message:</label>
+                <input type="text" name="message" id="message" required>
+                <input type="submit" value="Send" id="sendBtn">
+            </form>
+        </div>
+        <div class="groupLists">
+            <h1>Joined Groups:</h1>
+
+            <div class="joinedGroups"></div>
+        </div>
+    </main>
+</body>
+
+<script src="../js/chat.js"></script>
+<script src="../js/group.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
+
+</html>
