@@ -3,9 +3,6 @@ const chatForm = document.querySelector('.chatForm');
 const messageText = document.querySelector('#message');
 const showMessage = document.querySelector('.showMessage');
 
-let totalMsg = 0;
-let lastMsgId = 0;
-
 const displayMessages = (obj) => {
     // JWT Decode function
     const parseJwt = (token) => {
@@ -31,33 +28,72 @@ const displayMessages = (obj) => {
 // Display All Messages
 document.addEventListener('DOMContentLoaded', getmsgs);
 async function getmsgs(e) {
+    let lastMsgId = 0;
     try {
-        if (localStorage.getItem('savedMsg') === '') {
+        // Get All Messages from API, if not stored in Localstorage
+        if (!localStorage.getItem('savedMsg')) {
+            console.log(5432);
             const AllTextMessages = await axios.get(`http://localhost:3000/chat/getText`, { headers: { Authorization: token } });
+            console.log(AllTextMessages.data);
             displayMessages(AllTextMessages.data);
 
             const newMessages = JSON.stringify(AllTextMessages.data);
-            localStorage.setItem('savedMsg', newMessages)
+            localStorage.setItem('savedMsg', newMessages);
+            // console.log(newMessages);
+
+            const totalMsg = Object.keys(AllTextMessages.data).length;
+            lastMsgId = AllTextMessages.data[totalMsg - 1].msgId;
+            localStorage.setItem('lastMsgId', `${lastMsgId}`);
         }
+        // If stored in Localstorage, use them
         else {
+            console.log(123456);
+
             const oldMessages = JSON.parse(localStorage.getItem('savedMsg'));
             displayMessages(oldMessages);
+            // console.log(oldMessages);
         }
 
-        setInterval(async () => {
+        // Realtime API calls for new message after 1 sec intervals
+        /*setInterval(async () => {
             showMessage.innerHTML = '';
             try {
-                const AllTextMessages = await axios.get(`http://localhost:3000/chat/realTime`, { headers: { Authorization: token } });
-                displayMessages(AllTextMessages.data);
+                const newMsgs = await axios.post(`http://localhost:3000/chat/realTime`,
+                    {
+                        lastMsgId: +localStorage.getItem('lastMsgId'),
+
+                    }, { headers: { Authorization: token } }
+                );
+
+                // If new message is present in DB
+                if (newMsgs.data != []) {
+                    console.log(6543);
+
+                    const oldMessages = JSON.parse(localStorage.getItem('savedMsg'));
+
+                    const allMsgs = [ ...oldMessages, ...newMsgs.data ];
+                    const tenOrLessMsgs = allMsgs.slice(-10);      // take 10 or if less then 10 messages present, take them
+                    // console.log(tenOrLessMsgs);
+
+                    const totalMsg = Object.keys(tenOrLessMsgs).length;
+                    lastMsgId = tenOrLessMsgs[totalMsg - 1].msgId;
+                    localStorage.setItem('lastMsgId', `${lastMsgId}`);
+
+                    const newMessages = JSON.stringify(tenOrLessMsgs);
+                    localStorage.setItem('savedMsg', newMessages);
+                    
+                    displayMessages(tenOrLessMsgs);
+                }
+
             } catch (err) {
                 console.error('Error Caught: ', err);
             }
-        }, 1000);
+        }, 5000);*/
 
     } catch (err) {
         console.error('Error Caught: ', err);
     }
-    
+
 }
 
 // Post Text Message

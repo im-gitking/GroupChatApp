@@ -21,6 +21,11 @@ const User = require('./models/user');
 const Message = require('./models/message');
 
 // API Routing
+app.use((req, res, next) => {
+    console.log(req.url);
+    next();
+})
+
 app.use('/user', userRoutes);
 app.use('/chat', chatRoutes);
 
