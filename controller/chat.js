@@ -2,7 +2,6 @@ const sequelize = require("../util/database");
 const { Op } = require('sequelize');
 const Message = require('../models/message');
 const User = require('../models/user');
-const Group = require("../models/group");
 
 exports.postTextMessage = async (req, res, next) => {
     const t = await sequelize.transaction();
