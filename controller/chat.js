@@ -2,13 +2,17 @@ const sequelize = require("../util/database");
 const { Op } = require('sequelize');
 const Message = require('../models/message');
 const User = require('../models/user');
+const Group = require("../models/group");
 
 exports.postTextMessage = async (req, res, next) => {
     const t = await sequelize.transaction();
     try {
         const textMessage = req.body;
         console.log(textMessage);
-        const savedTextMsg = await req.user.createMessage(textMessage, { transaction: t });
+        const savedTextMsg = await req.user.createMessage({
+            message: textMessage.message,
+            groupId: textMessage.id
+        }, { transaction: t });
 
         await t.commit();
         res.status(200).json([
@@ -34,6 +38,9 @@ exports.getMessage = async (req, res, next) => {
                 model: User,
                 as: 'user'
             }],
+            where: {
+                groupId: req.params.groupId
+            },
             limit: 10,
             order: [['id', 'DESC']]
         }, { transaction: t });
@@ -64,11 +71,13 @@ exports.newMessages = async (req, res, next) => {
     const t = await sequelize.transaction();
     try {
         const lastMsgId = req.body.lastMsgId;
+        console.log(req.params.groupId);
         let newTextMsgs = await Message.findAll({
             where: {
                 id: {
-                    [Op.gt]: lastMsgId  // Op.gt stands for 'greater than'
-                }
+                    [Op.gt]: lastMsgId,  // Op.gt stands for 'greater than'
+                },
+                groupId: req.params.groupId
             },
             include: [{
                 model: User,

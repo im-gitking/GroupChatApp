@@ -13,6 +13,7 @@ app.use(cors());
 const sequelize = require('./util/database');
 const userRoutes = require('./routes/userRoutes');
 const chatRoutes = require('./routes/chatRoutes');
+const groupRoutes = require('./routes/groupRoutes');
 
 const pagesRoutes = require('./routes/pagesRoutes');
 
@@ -30,6 +31,7 @@ app.use((req, res, next) => {
 
 app.use('/user', userRoutes);
 app.use('/chat', chatRoutes);
+app.use('/group', groupRoutes);
 
 // Pages Routing
 app.use('/', pagesRoutes);
@@ -44,7 +46,7 @@ Message.belongsTo(Group, { foreignKey: 'groupId' });
 Group.hasMany(Member, { foreignKey: 'groupId' });
 Member.belongsTo(Group, { foreignKey: 'groupId' });
 
-User.hasOne(Member, { foreignKey: 'userId'});
+User.hasMany(Member, { foreignKey: 'userId'});
 Member.belongsTo(User, { foreignKey: 'userId'});
 
 // DB & server start
