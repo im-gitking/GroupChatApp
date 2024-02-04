@@ -43,14 +43,19 @@ async function getmsgs() {
             console.log(AllTextMessages.data);
             displayMessages(AllTextMessages.data);
 
-            if (AllTextMessages.data.length > 0) {
+            if(AllTextMessages.data.length > 0) {
                 const newMessages = JSON.stringify(AllTextMessages.data);
                 localStorage.setItem(`savedGroup${activeGroupId}`, newMessages);
                 // console.log(newMessages);
-
+    
                 const totalMsg = Object.keys(AllTextMessages.data).length;
                 lastMsgId = AllTextMessages.data[totalMsg - 1].msgId;
                 localStorage.setItem(`lastMsgIdOfGrp${activeGroupId}`, `${lastMsgId}`);
+            } else {
+                const newMessages = JSON.stringify([]);
+                localStorage.setItem(`savedGroup${activeGroupId}`, newMessages);
+    
+                localStorage.setItem(`lastMsgIdOfGrp${activeGroupId}`, `0`);
             }
         }
         // If stored in Localstorage, use them
