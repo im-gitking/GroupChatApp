@@ -2,6 +2,7 @@ const token = localStorage.getItem('token');
 const chatForm = document.querySelector('.chatForm');
 const messageText = document.querySelector('#message');
 const showMessage = document.querySelector('.showMessage');
+const uploadFile = document.querySelector('#uploadFile');
 showMessage.style.display = 'none';
 
 let intervalId = null;
@@ -43,18 +44,18 @@ async function getmsgs() {
             console.log(AllTextMessages.data);
             displayMessages(AllTextMessages.data);
 
-            if(AllTextMessages.data.length > 0) {
+            if (AllTextMessages.data.length > 0) {
                 const newMessages = JSON.stringify(AllTextMessages.data);
                 localStorage.setItem(`savedGroup${activeGroupId}`, newMessages);
                 // console.log(newMessages);
-    
+
                 const totalMsg = Object.keys(AllTextMessages.data).length;
                 lastMsgId = AllTextMessages.data[totalMsg - 1].msgId;
                 localStorage.setItem(`lastMsgIdOfGrp${activeGroupId}`, `${lastMsgId}`);
             } else {
                 const newMessages = JSON.stringify([]);
                 localStorage.setItem(`savedGroup${activeGroupId}`, newMessages);
-    
+
                 localStorage.setItem(`lastMsgIdOfGrp${activeGroupId}`, `0`);
             }
         }
@@ -69,7 +70,6 @@ async function getmsgs() {
 
         // Realtime API calls for new message after 1 sec intervals
         intervalId = setInterval(async () => {
-            showMessage.innerHTML = '';
             try {
                 const newMsgs = await axios.post(`http://localhost:3000/chat/realTime/${localStorage.getItem('groupId')}`,
                     {
@@ -80,7 +80,8 @@ async function getmsgs() {
 
                 // If new message is present in DB
                 if (newMsgs.data.length > 0) {
-                    console.log(6543);
+                    console.log('Realtime message fecthing');
+                    showMessage.innerHTML = '';
 
                     const oldMessages = JSON.parse(localStorage.getItem(`savedGroup${localStorage.getItem('groupId')}`));
 
@@ -110,7 +111,7 @@ async function getmsgs() {
 }
 
 // Post Text Message
-chatForm.addEventListener('submit', sendMessage);
+/*chatForm.addEventListener('submit', sendMessage);
 async function sendMessage(e) {
     const activeGroupId = +localStorage.getItem('groupId');
 
@@ -123,6 +124,31 @@ async function sendMessage(e) {
         // console.log(sendMessageRes.data);
 
         displayMessages(sendMessageRes.data);
+    }
+    catch (err) {
+        console.error('Error Caught: ', err);
+    }
+}*/
+
+// File/Image uploading
+chatForm.addEventListener('submit', sendMessage);
+async function sendMessage(e) {
+    const activeGroupId = +localStorage.getItem('groupId');
+
+    try {
+        e.preventDefault();
+        if(messageText.value || uploadFile.value) {
+            const sendMessageRes = await axios.post(`http://localhost:3000/chat/sendMessage`, {
+                message: messageText.value,
+                file: uploadFile.value,
+                id: activeGroupId
+            }, { headers: { Authorization: token } });
+            // console.log(sendMessageRes.data);
+            displayMessages(sendMessageRes.data);
+        } 
+        else {
+            alert('No message text or image to send...');
+        }
     }
     catch (err) {
         console.error('Error Caught: ', err);

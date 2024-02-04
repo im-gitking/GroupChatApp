@@ -37,8 +37,9 @@
         <div class="groupForm">
             <form action="/" class="chatForm" style="display: none;">
                 <label for="message">Type Message:</label>
-                <input type="text" name="message" id="message" required>
-                <input type="hidden" name="groupId" id="groupId" value="">
+                <input type="text" name="message" id="message">
+                <label for="uploadFile">+</label>
+                <input type="file" accept="image/*" name="uploadFile" id="uploadFile" style="display: none;">
                 <input type="submit" value="Send" id="sendBtn">
             </form>
         </div>
