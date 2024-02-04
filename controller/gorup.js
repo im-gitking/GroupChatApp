@@ -2,6 +2,7 @@ const sequelize = require("../util/database");
 const { v4: uuidv4 } = require('uuid');
 const Group = require('../models/group');
 const Member = require('../models/member');
+const { where } = require("sequelize");
 
 exports.createGroup = async (req, res, next) => {
     const t = await sequelize.transaction();
@@ -87,9 +88,7 @@ exports.joinMember = async (req, res, next) => {
     const t = await sequelize.transaction();
     try {
         const groupId = req.params.groupId;
-        const groupObj = await Group.findByPk(groupId);
 
-        // member if found -> created will be false and memberObj will be undefined
         const [memberObj, created] = await Member.findOrCreate({
             where: {
                 groupId: groupId,
@@ -100,17 +99,18 @@ exports.joinMember = async (req, res, next) => {
             },
             transaction: t
         });
-        // console.log(memberObj.length, created);
+
+        if (created) {
+            await Group.update(
+                { memberCount: sequelize.literal('memberCount + 1') },
+                { where: { id: groupId }, transaction: t }
+            );
+        }
 
         await t.commit();
-        if (created) {
-            res.status(200).json({ success: 'Member was created' });
-        } else {
-            res.status(200).json({ success: 'Member already exists' });
-        }
-    }
-    catch (err) {
+        res.status(200).json({ success: created ? 'Member was created' : 'Member already exists' });
+
+    } catch (err) {
         await t.rollback();
-        console.error('Error Caught: ', err);
     }
 }

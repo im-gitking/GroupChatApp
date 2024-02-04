@@ -14,6 +14,7 @@ const sequelize = require('./util/database');
 const userRoutes = require('./routes/userRoutes');
 const chatRoutes = require('./routes/chatRoutes');
 const groupRoutes = require('./routes/groupRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 const pagesRoutes = require('./routes/pagesRoutes');
 
@@ -32,6 +33,7 @@ app.use((req, res, next) => {
 app.use('/user', userRoutes);
 app.use('/chat', chatRoutes);
 app.use('/group', groupRoutes);
+app.use('/admin', adminRoutes);
 
 // Pages Routing
 app.use('/', pagesRoutes);

@@ -14,7 +14,7 @@ async function loginSubmit(e) {
         // console.log(loginSubmitedData.data);
         localStorage.setItem('token', loginSubmitedData.data.token);
         if (!alert(loginSubmitedData.data.message)) {
-            window.location.href = '/home';
+            window.location.href = '/group';
         }
     }
     catch (err) {

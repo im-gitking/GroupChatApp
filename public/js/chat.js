@@ -6,18 +6,19 @@ showMessage.style.display = 'none';
 
 let intervalId = null;
 
+// JWT Decode function
+const parseJwt = (token) => {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+};
+
+
 const displayMessages = (obj) => {
-    // JWT Decode function
-    const parseJwt = (token) => {
-        var base64Url = token.split('.')[1];
-        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-
-        return JSON.parse(jsonPayload);
-    };
-
     const userID = parseJwt(token).userID;
 
     obj.forEach(msg => {
@@ -76,7 +77,7 @@ async function getmsgs() {
 
                     const oldMessages = JSON.parse(localStorage.getItem(`savedGroup${localStorage.getItem('groupId')}`));
 
-                    const allMsgs = [ ...oldMessages, ...newMsgs.data ];
+                    const allMsgs = [...oldMessages, ...newMsgs.data];
                     const tenOrLessMsgs = allMsgs.slice(-10);      // take 10 or if less then 10 messages present, take them
                     // console.log(tenOrLessMsgs);
 
@@ -86,7 +87,7 @@ async function getmsgs() {
 
                     const newMessages = JSON.stringify(tenOrLessMsgs);
                     localStorage.setItem(`savedGroup${activeGroupId}`, newMessages);
-                    
+
                     displayMessages(tenOrLessMsgs);
                 }
 

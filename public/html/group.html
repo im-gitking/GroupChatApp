@@ -16,8 +16,20 @@
         </div>
         <div class="groupDetails">
             <div class="groupName"></div>
-            <div class="groupMembersCount"></div>
-            <div class="members"></div>
+            <div class="groupMembersCount" style="cursor:pointer;"></div>
+            <div class="members" style="cursor:pointer;">
+                <div class="member">
+                    <button class="closeMember" style="display: none;">Close</button>
+                    <form action="/" class="memberSearch" style="display: none;">
+                        <input type="text" name="findMember" id="findMember" required>
+                        <input type="submit" value="Search">
+                    </form>
+                    <div class="memberSearchResult"></div>
+                    <div class="owner-div"></div>
+                    <div class="admin-div"></div>
+                    <div class="member-div"></div>
+                </div>
+            </div>
             <div class="groupLink"></div>
 
             <div class="showMessage"></div>

@@ -20,7 +20,7 @@ const groupManager = (groupObj) => {
     groupMembersCount.innerHTML = `<p>Members: ${groupObj.groupDetails.memberCount}</p>`;
     groupLink.innerHTML = `<a href="http://localhost:3000/group/join/${groupObj.groupDetails.inviteLink}"><p>Group Link</p></a>`;
 
-    // show messages of group
+    // show messages of group & add groupId in localStorage
     if (intervalId) {
         clearInterval(intervalId);
     }
@@ -30,9 +30,7 @@ const groupManager = (groupObj) => {
     showMessage.innerHTML = '';
     getmsgs();
 
-    // Make group chat from visibale & add groupId
-    const groupIdInput = document.querySelector('#groupId');
-    groupIdInput.value = groupObj.groupDetails.id;
+    // Make group chat from visibale
     groupchatForm.style.display = 'block';
 }
 
@@ -59,8 +57,7 @@ joinedGroups.addEventListener('click', async (e) => {
 
             groupManager(groupData.data);
 
-            showMessage.style.display = 'block';
-
+            memberToMessageOpen();
         } catch (err) {
             console.error('Error Caught: ', err);
         }
@@ -129,7 +126,7 @@ document.addEventListener('DOMContentLoaded', async (e) => {
 // join operation
 async function joinFinish() {
     try {
-        if(localStorage.getItem('joinOp') === 'true') {
+        if (localStorage.getItem('joinOp') === 'true') {
             const groupId = localStorage.getItem('groupId');
             const groupData = await axios.get(`http://localhost:3000/group/openGroup/${groupId}`, { headers: { Authorization: token } });
             // console.log(groupData.data);
