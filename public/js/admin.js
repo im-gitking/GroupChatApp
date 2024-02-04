@@ -113,7 +113,7 @@ groupMembersCount.addEventListener('click', async (e) => {
     const groupId = localStorage.getItem('groupId');
     try {
         // show all members
-        const allMembers = await axios.get(`http://localhost:3000/admin/membersDetails/${groupId}`, { headers: { Authorization: token } });
+        const allMembers = await axios.get(`http://13.53.193.195:3000/admin/membersDetails/${groupId}`, { headers: { Authorization: token } });
         // console.log(allMembers.data);
         memberList(allMembers.data);
     } catch (err) {
@@ -126,7 +126,7 @@ memberSection.addEventListener('click', async (e) => {
     const groupId = +localStorage.getItem('groupId');
     try {
         if (e.target.classList.contains('promote') || e.target.classList.contains('demote')) {
-            const promoteMember = await axios.post(`http://localhost:3000/admin/promoteDemote`, {
+            const promoteMember = await axios.post(`http://13.53.193.195:3000/admin/promoteDemote`, {
                 groupId: groupId,
                 targetMember: e.target.id
             }, { headers: { Authorization: token } });
@@ -145,7 +145,7 @@ memberSection.addEventListener('click', async (e) => {
             }
         }
         else if (e.target.classList.contains('remove')) {
-            const removeMember = await axios.post(`http://localhost:3000/admin/removeMember`, {
+            const removeMember = await axios.post(`http://13.53.193.195:3000/admin/removeMember`, {
                 groupId: groupId,
                 targetMember: e.target.id
             }, { headers: { Authorization: token } });
@@ -179,7 +179,7 @@ memberSearch.addEventListener('submit', async (e) => {
         console.log(isNaN(+nameOrEmailOrNumber));
         console.log(+nameOrEmailOrNumber);
 
-        const findingMember = await axios.post(`http://localhost:3000/admin/searchMember`, {
+        const findingMember = await axios.post(`http://13.53.193.195:3000/admin/searchMember`, {
             name: isEmail(nameOrEmailOrNumber) || !isNaN(+nameOrEmailOrNumber) ? NaN : nameOrEmailOrNumber,
             email: isEmail(nameOrEmailOrNumber) ? nameOrEmailOrNumber : NaN,
             number: +nameOrEmailOrNumber,
@@ -233,7 +233,7 @@ memberSearchResult.addEventListener('click', async (e) => {
     const groupId = +localStorage.getItem('groupId');
     try {
         if (e.target.classList.contains('addMember')) {
-            const findingMember = await axios.post(`http://localhost:3000/admin/addMember`, {
+            const findingMember = await axios.post(`http://13.53.193.195:3000/admin/addMember`, {
                 userId: e.target.id,
                 groupId: groupId
             }, { headers: { Authorization: token } });

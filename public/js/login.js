@@ -7,7 +7,7 @@ loginForm.addEventListener('submit', loginSubmit);
 async function loginSubmit(e) {
     e.preventDefault();
     try {
-        const loginSubmitedData = await axios.post(`http://localhost:3000/user/login`, {
+        const loginSubmitedData = await axios.post(`http://13.53.193.195:3000/user/login`, {
             email: email.value,
             password: password.value
         });

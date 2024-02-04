@@ -39,7 +39,7 @@ async function getmsgs() {
         // Get All Messages from API, if not stored in Localstorage
         if (!localStorage.getItem(`savedGroup${activeGroupId}`)) {
             console.log('getting MSG from API');
-            const AllTextMessages = await axios.get(`http://localhost:3000/chat/getText/${activeGroupId}`, { headers: { Authorization: token } });
+            const AllTextMessages = await axios.get(`http://13.53.193.195:3000/chat/getText/${activeGroupId}`, { headers: { Authorization: token } });
             console.log(AllTextMessages.data);
             displayMessages(AllTextMessages.data);
 
@@ -64,7 +64,7 @@ async function getmsgs() {
         intervalId = setInterval(async () => {
             showMessage.innerHTML = '';
             try {
-                const newMsgs = await axios.post(`http://localhost:3000/chat/realTime/${localStorage.getItem('groupId')}`,
+                const newMsgs = await axios.post(`http://13.53.193.195:3000/chat/realTime/${localStorage.getItem('groupId')}`,
                     {
                         lastMsgId: +localStorage.getItem(`lastMsgIdOfGrp${localStorage.getItem('groupId')}`),
 
@@ -109,7 +109,7 @@ async function sendMessage(e) {
 
     try {
         e.preventDefault();
-        const sendMessageRes = await axios.post(`http://localhost:3000/chat/sendText`, {
+        const sendMessageRes = await axios.post(`http://13.53.193.195:3000/chat/sendText`, {
             message: messageText.value,
             id: activeGroupId
         }, { headers: { Authorization: token } });
