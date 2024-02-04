@@ -43,18 +43,18 @@ async function getmsgs() {
             console.log(AllTextMessages.data);
             displayMessages(AllTextMessages.data);
 
-            if(AllTextMessages.data.length > 0) {
+            if (AllTextMessages.data.length > 0) {
                 const newMessages = JSON.stringify(AllTextMessages.data);
                 localStorage.setItem(`savedGroup${activeGroupId}`, newMessages);
                 // console.log(newMessages);
-    
+
                 const totalMsg = Object.keys(AllTextMessages.data).length;
                 lastMsgId = AllTextMessages.data[totalMsg - 1].msgId;
                 localStorage.setItem(`lastMsgIdOfGrp${activeGroupId}`, `${lastMsgId}`);
             } else {
                 const newMessages = JSON.stringify([]);
                 localStorage.setItem(`savedGroup${activeGroupId}`, newMessages);
-    
+
                 localStorage.setItem(`lastMsgIdOfGrp${activeGroupId}`, `0`);
             }
         }
@@ -69,7 +69,6 @@ async function getmsgs() {
 
         // Realtime API calls for new message after 1 sec intervals
         intervalId = setInterval(async () => {
-            showMessage.innerHTML = '';
             try {
                 const newMsgs = await axios.post(`http://13.53.193.195:3000/chat/realTime/${localStorage.getItem('groupId')}`,
                     {
@@ -80,6 +79,8 @@ async function getmsgs() {
 
                 // If new message is present in DB
                 if (newMsgs.data.length > 0) {
+                    showMessage.innerHTML = '';
+
                     console.log('Realtime message fecthing');
 
                     const oldMessages = JSON.parse(localStorage.getItem(`savedGroup${localStorage.getItem('groupId')}`));
