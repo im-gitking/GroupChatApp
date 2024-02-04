@@ -130,6 +130,9 @@ async function sendMessage(e) {
     }
 }*/
 
+// const chatForm = document.querySelector('.chatForm');
+// const uploadFile = document.querySelector('#uploadFile');
+
 // File/Image uploading
 chatForm.addEventListener('submit', sendMessage);
 async function sendMessage(e) {
@@ -137,15 +140,19 @@ async function sendMessage(e) {
 
     try {
         e.preventDefault();
-        if(messageText.value || uploadFile.value) {
-            const sendMessageRes = await axios.post(`http://localhost:3000/chat/sendMessage`, {
-                message: messageText.value,
-                file: uploadFile.value,
-                id: activeGroupId
-            }, { headers: { Authorization: token } });
-            // console.log(sendMessageRes.data);
-            displayMessages(sendMessageRes.data);
-        } 
+        if (messageText.value || uploadFile.value) {
+            const formData = new FormData();
+            formData.append('uploadFile', uploadFile.files[0]);
+
+            const sendMessageRes = await axios.post('http://localhost:3000/chat/sendMessage', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': token
+                }
+            });
+            console.log(sendMessageRes.data);
+            // displayMessages(sendMessageRes.data);
+        }
         else {
             alert('No message text or image to send...');
         }
