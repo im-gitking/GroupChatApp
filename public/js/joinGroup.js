@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', async (e) => {
         let joinId = URLparts[URLparts.length - 1];
         // console.log(joinId);
 
-        const groupDetails = await axios.get(`http://localhost:3000/group/groupDetails/${joinId}`, { headers: { Authorization: token } });
+        const groupDetails = await axios.get(`http://13.53.193.195:3000/group/groupDetails/${joinId}`, { headers: { Authorization: token } });
         console.log(groupDetails.data);
         groupJoiner.innerHTML = `
         <div class="groupDetails">
@@ -20,12 +20,12 @@ document.addEventListener('DOMContentLoaded', async (e) => {
         const joinBtn = document.querySelector('.join');
         joinBtn.addEventListener('click', async (e) => {
             try {
-                const joinMember = await axios.get(`http://localhost:3000/group/joinMember/${e.target.id}`, { headers: { Authorization: token } });
+                const joinMember = await axios.get(`http://13.53.193.195:3000/group/joinMember/${e.target.id}`, { headers: { Authorization: token } });
                 console.log(joinMember.data);
                 
                 localStorage.setItem('joinOp', 'true');
                 localStorage.setItem('groupId', e.target.id);
-                window.location.href = 'http://localhost:3000/group';
+                window.location.href = 'http://13.53.193.195:3000/group';
             } catch (error) {
                 console.error('Error Caught: ', err);
             }
