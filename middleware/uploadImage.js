@@ -1,39 +1,49 @@
 const multer = require('multer');
-const AWS = require('aws-sdk');
-const multerS3 = require('multer-s3');
 
-AWS.config.update({
-    accessKeyId: process.env.AWS_USER_KEY,
-    secretAccessKey: process.env.AWS_USER_SECRET
-});
+// const upload = multer({ dest: "uploads/" });     //for simple ulpoad, diskStorage() for more control
 
-const s3 = new AWS.S3();
-
-const upload = multer({
-    storage: multerS3({
-        s3: s3,
-        bucket: 'expensetracker000',
-        key: function (req, file, cb) {
-            cb(null, file.originalname);
+const multerStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        // Get the type of file. 
+        const ext = file.mimetype.split("/")[0];
+        // if type is image -> store in 'uploads/image' else in 'uploads/others'
+        if (ext === "image") {
+            cb(null, "uploads/images");
+        } else {
+            cb(null, "uploads/others");
         }
-    })
+    },
+    filename: (req, file, cb) => {
+        cb(null, `${Date.now()}.${file.originalname}`);
+    }
 });
 
-exports.imageUpload = function (req, res, next) {
-    upload.array('uploadFile')(req, res, function(err) {
-        console.log(req.files);
-        console.log(1234);
+// Use diskstorage option in multer
+const upload = multer({ storage: multerStorage });
+
+exports.imageUpload = async function (req, res, next) {
+    // upload image
+    upload.single('image')(req, res, function (err) {
+        console.log("Body: ", req.body.text);
+        console.log("File: ", req.file);
         
-        if (err instanceof multer.MulterError) {
-            // A Multer error occurred when uploading.
-            return res.status(500).json(err);
-        } else if (err) {
-            // An unknown error occurred when uploading.
-            return res.status(500).json(err);
+        if(req.file != undefined) {
+            if (err instanceof multer.MulterError) {
+                // A Multer error occurred when uploading.
+                console.log(1);
+                return res.status(500).json(err);
+            } else if (err) {
+                // An unknown error occurred when uploading.
+                console.log(2);
+                return res.status(500).json(err);
+            }
+    
+            console.log(req.file.path);
+            // res.send("File successfully uploaded.");
+            next();
         }
-        // Everything went fine and file is uploaded
-        res.send('Successfully uploaded ' + req.files.length + ' files!');
-        next();
+        else {
+            next();
+        }
     });
 };
-

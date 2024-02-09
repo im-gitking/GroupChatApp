@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Group Name - Group Chat App</title>
+    <title>Group Chat App</title>
 </head>
 
 <body>
@@ -39,7 +39,7 @@
                 <label for="message">Type Message:</label>
                 <input type="text" name="message" id="message">
                 <label for="uploadFile">+</label>
-                <input type="file" accept="image/*" name="uploadFile" id="uploadFile" style="display: none;">
+                <input type="file" id="uploadFile" name="uploadFile" multiple="true" accept="image/*" />
                 <input type="submit" value="Send" id="sendBtn">
             </form>
         </div>
@@ -48,10 +48,12 @@
 
             <div class="joinedGroups" style="cursor:pointer;"></div>
         </div>
+        <button type="button" class="clicme">Click Me!</button>
     </main>
 </body>
 
-<script src="../js/chat.js"></script>
+<script src="http://localhost:3000/socket.io/socket.io.js"></script>
+<script src="../js/chatWS.js"></script>
 <script src="../js/group.js"></script>
 <script src="../js/admin.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>

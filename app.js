@@ -3,11 +3,24 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const env = require('dotenv').config();
+const socketIo = require('socket.io');
+// const { instrument } = require('@socket.io/admin-ui');
 
 // Using packages
 const app = express();
+const server = require('http').createServer(app);
+const io = socketIo(server, {
+    cors: {
+        origin: ['http://localhost:3000', 'https://admin.socket.io'],
+        // origin: "*",
+        methods: ["GET", "POST"],
+        credentials: true
+    },
+});
 app.use(bodyParser.json());
 app.use(cors());
+
+// instrument(io, { auth: false });
 
 // Required Paths
 const sequelize = require('./util/database');
@@ -15,6 +28,9 @@ const userRoutes = require('./routes/userRoutes');
 const chatRoutes = require('./routes/chatRoutes');
 const groupRoutes = require('./routes/groupRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+
+const websocketAuth = require('./middleware/websocketAuth');
+const connectionListener = require('./websocket/connectionListener');
 
 const pagesRoutes = require('./routes/pagesRoutes');
 
@@ -24,8 +40,15 @@ const Message = require('./models/message');
 const Member = require('./models/member');
 const Group = require('./models/group');
 
-// API Routing
+// Authenticaton of WebSocket Connection request
+io.use(websocketAuth);
+
+// socket.io all event listeners and actions
+io.on('connection', connectionListener);
+
+// HTTP API Routing
 app.use((req, res, next) => {
+    req.io = io;
     console.log(req.url);
     next();
 })
@@ -48,8 +71,8 @@ Message.belongsTo(Group, { foreignKey: 'groupId' });
 Group.hasMany(Member, { foreignKey: 'groupId' });
 Member.belongsTo(Group, { foreignKey: 'groupId' });
 
-User.hasMany(Member, { foreignKey: 'userId'});
-Member.belongsTo(User, { foreignKey: 'userId'});
+User.hasMany(Member, { foreignKey: 'userId' });
+Member.belongsTo(User, { foreignKey: 'userId' });
 
 // DB & server start
 sequelize
@@ -57,6 +80,6 @@ sequelize
     // .sync({force: true})
     .then(result => {
         // console.log(result);
-        app.listen(3000);
+        server.listen(3000);
     })
     .catch(err => console.log(err));

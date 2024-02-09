@@ -2,30 +2,39 @@ const sequelize = require("../util/database");
 const { Op } = require('sequelize');
 const Message = require('../models/message');
 const User = require('../models/user');
-const multer = require('multer');
 const AWS = require('aws-sdk');
-const multerS3 = require('multer-s3');
+const fs = require('fs');
 
-AWS.config.update({
-    accessKeyId: process.env.AWS_USER_KEY,
-    secretAccessKey: process.env.AWS_USER_SECRET
-});
+function uploadToS3(data, filename) {
+    const BUCKET_NAME = 'expensetracker000';
+    const AWS_USER_KEY = process.env.AWS_USER_KEY;
+    const AWS_USER_SECRET = process.env.AWS_USER_SECRET;
 
-const s3 = new AWS.S3();
+    const s3Bucket = new AWS.S3({
+        accessKeyId: AWS_USER_KEY,
+        secretAccessKey: AWS_USER_SECRET
+    });
 
-const upload = multer({
-    storage: multerS3({
-        s3: s3,
-        bucket: 'expensetracker000',
-        acl: 'public-read',
-        metadata: function (req, file, cb) {
-            cb(null, {fieldName: file.fieldname});
-        },
-        key: function (req, file, cb) {
-            cb(null, Date.now().toString())
-        }
+    const params = {
+        Bucket: BUCKET_NAME,
+        Key: filename,
+        Body: data,
+        ACL: 'public-read'
+    };
+
+    return new Promise((resolve, reject) => {
+        s3Bucket.upload(params, (err, s3Response) => {
+            if (err) {
+                console.log('Something went wrong', err);
+                reject(err);
+            }
+            else {
+                console.log('sccess', s3Response);
+                resolve(s3Response.Location);
+            }
+        })
     })
-});
+}
 
 exports.postTextMessage = async (req, res, next) => {
     const t = await sequelize.transaction();
@@ -76,7 +85,8 @@ exports.getMessage = async (req, res, next) => {
                 id: msg.userId,
                 msgId: msg.id,
                 from: msg.user.name,
-                textmsg: msg.message
+                textmsg: msg.message,
+                image: msg.imageLink
             });
         });
         console.log(messageObj);
@@ -93,8 +103,9 @@ exports.getMessage = async (req, res, next) => {
 exports.newMessages = async (req, res, next) => {
     const t = await sequelize.transaction();
     try {
+
         const lastMsgId = req.body.lastMsgId;
-        console.log(req.params.groupId);
+        // console.log(12, req.params.groupId);
         let newTextMsgs = await Message.findAll({
             where: {
                 id: {
@@ -118,7 +129,8 @@ exports.newMessages = async (req, res, next) => {
                 id: msg.userId,
                 msgId: msg.id,
                 from: msg.user.name,
-                textmsg: msg.message
+                textmsg: msg.message,
+                image: msg.imageLink
             });
         });
         console.log(messageObj);
@@ -136,20 +148,35 @@ exports.newMessages = async (req, res, next) => {
 exports.postMessage = async (req, res, next) => {
     const t = await sequelize.transaction();
     try {
-        // Use multer middleware to handle the file upload
-        console.log(req.body);
-        upload.single(req.body.file)(req, res, async function(err) {
-            if (err) {
-                // Handle any errors from the file upload
-                console.error('Upload Error:', err);
-                await t.rollback();
-                return res.status(500).send(err);
-            }
-            // File has been uploaded successfully
-            console.log('Successfully uploaded ' + req.body.file.location + '!');
+        // console.log([req.body, req.file]);
+        let fileURL = null;
+        if (req.file != undefined) {
+            const ext = req.file.mimetype.split("/")[1];
+            const filename = `GroupChatApp-${req.user.id}/${new Date()}.${ext}`;
+            fileURL = await uploadToS3(fs.createReadStream(req.file.path), filename);
+            // console.log(12345, fileURL);
+        }
 
-            // Continue with your existing logic here...
-        });
+        const savedTextMsg = await req.user.createMessage({
+            message: req.body.text,
+            imageLink: fileURL,
+            groupId: req.body.groupId
+        }, { transaction: t });
+
+        console.log(1, req.io)
+        console.log(2, req.body.socketId);
+
+        // req.io.to(req.body.socketId).broadcast.emit('event', 'message for ther user')
+        req.io.emit('event', 'message for me and others')
+        await t.commit();
+        res.status(200).json([
+            {
+                id: savedTextMsg.userId,
+                msgId: savedTextMsg.id,
+                textmsg: savedTextMsg.message,
+                image: savedTextMsg.imageLink
+            }
+        ]);
     }
     catch (err) {
         await t.rollback();

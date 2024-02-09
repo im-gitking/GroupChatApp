@@ -7,7 +7,7 @@ const uploadImage = require('../middleware/uploadImage');
 
 const chatController = require('../controller/chat');
 
-router.post('/sendMessage', auth.authenticate , uploadImage.imageUpload);
+router.post('/sendMessage', auth.authenticate , uploadImage.imageUpload, chatController.postMessage);
 // router.post('/sendText', auth.authenticate , chatController.postTextMessage);
 router.get('/getText/:groupId', auth.authenticate , chatController.getMessage);
 router.post('/realTime/:groupId', auth.authenticate , chatController.newMessages);

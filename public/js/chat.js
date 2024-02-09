@@ -5,6 +5,24 @@ const showMessage = document.querySelector('.showMessage');
 const uploadFile = document.querySelector('#uploadFile');
 showMessage.style.display = 'none';
 
+// creating new Webscoket connection on this link
+const socket = io('http://localhost:3000', { auth: { token: token } });
+
+let socketId = null;
+socket.on('connect', () => {
+    socketId = socket.id;
+    console.log(`You connected with id: ${socket.id}`);
+    // socket.emit('custom-event', 10, 'hii', {a: 'a'});
+})
+
+socket.on('connect_error', error => {
+    console.log(error);
+})
+
+socket.on('recieved-message', message => {
+    console.log(message);
+})
+
 let intervalId = null;
 
 // JWT Decode function
@@ -26,7 +44,14 @@ const displayMessages = (obj) => {
         if (msg.id === userID) {
             msg.from = 'You'
         }
-        showMessage.innerHTML += `<div><p><span>${msg.from}:</span> ${msg.textmsg}</p></div>`;
+
+        let imageElm = '';
+        console.log(msg.image);
+        if (msg.image) {
+            imageElm = `<img src="${msg.image}" alt="">`;
+        }
+
+        showMessage.innerHTML += `<div class="message-container">${imageElm}<p><span>${msg.from}:</span> ${msg.textmsg}</p></div>`;
     });
 }
 
@@ -56,7 +81,7 @@ async function getmsgs() {
                 const newMessages = JSON.stringify([]);
                 localStorage.setItem(`savedGroup${activeGroupId}`, newMessages);
 
-                localStorage.setItem(`lastMsgIdOfGrp${activeGroupId}`, `0`);
+                localStorage.setItem(`lastMsgIdOfGrp${activeGroupId}`, `${lastMsgId}`);
             }
         }
         // If stored in Localstorage, use them
@@ -71,6 +96,9 @@ async function getmsgs() {
         // Realtime API calls for new message after 1 sec intervals
         intervalId = setInterval(async () => {
             try {
+                socket.emit('inbox-message', `I am sending: ${socket.id}`, 'roomName');
+
+
                 const newMsgs = await axios.post(`http://localhost:3000/chat/realTime/${localStorage.getItem('groupId')}`,
                     {
                         lastMsgId: +localStorage.getItem(`lastMsgIdOfGrp${localStorage.getItem('groupId')}`),
@@ -130,9 +158,6 @@ async function sendMessage(e) {
     }
 }*/
 
-// const chatForm = document.querySelector('.chatForm');
-// const uploadFile = document.querySelector('#uploadFile');
-
 // File/Image uploading
 chatForm.addEventListener('submit', sendMessage);
 async function sendMessage(e) {
@@ -142,7 +167,9 @@ async function sendMessage(e) {
         e.preventDefault();
         if (messageText.value || uploadFile.value) {
             const formData = new FormData();
-            formData.append('uploadFile', uploadFile.files[0]);
+            formData.append('text', messageText.value);
+            formData.append('image', uploadFile.files[0]);
+            formData.append('groupId', activeGroupId);
 
             const sendMessageRes = await axios.post('http://localhost:3000/chat/sendMessage', formData, {
                 headers: {
@@ -151,7 +178,7 @@ async function sendMessage(e) {
                 }
             });
             console.log(sendMessageRes.data);
-            // displayMessages(sendMessageRes.data);
+            displayMessages(sendMessageRes.data);
         }
         else {
             alert('No message text or image to send...');
@@ -161,3 +188,11 @@ async function sendMessage(e) {
         console.error('Error Caught: ', err);
     }
 }
+
+document.addEventListener('click', (e) => {
+    socket.emit('inbox-message', `I got caught....${socket.id}`);
+})
+
+socket.emit('join-room', 'myroom1', message => {
+    console.log(message);
+});
