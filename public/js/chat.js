@@ -51,7 +51,10 @@ const displayMessages = (obj) => {
             imageElm = `<img src="${msg.image}" alt="">`;
         }
 
-        showMessage.innerHTML += `<div class="message-container">${imageElm}<p><span>${msg.from}:</span> ${msg.textmsg}</p></div>`;
+        showMessage.innerHTML += `<div class="message-container">
+        <span>${msg.from}:</span>
+        ${imageElm}
+        <p> ${msg.textmsg}</p></div>`;
     });
 }
 
@@ -188,11 +191,3 @@ async function sendMessage(e) {
         console.error('Error Caught: ', err);
     }
 }
-
-document.addEventListener('click', (e) => {
-    socket.emit('inbox-message', `I got caught....${socket.id}`);
-})
-
-socket.emit('join-room', 'myroom1', message => {
-    console.log(message);
-});

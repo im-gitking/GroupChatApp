@@ -11,6 +11,7 @@ const closeMember = document.querySelector('.closeMember');
 let myRankInActiveGroup = null;
 
 function memberToMessageOpen() {
+    newGroup.innerHTML = '';
     findMember.value = '';
     memberSearchResult.innerHTML = '';
     closeMember.style.display = 'none';
@@ -20,9 +21,10 @@ function memberToMessageOpen() {
     adminDiv.innerHTML = '';
     memberDiv.innerHTML = '';
     showMessage.style.display = 'block';
-    groupchatForm.style.display = 'block';
+    groupchatForm.style.display = 'flex';
 }
 function messageToMemberOpen() {
+    newGroup.innerHTML = '';
     findMember.value = '';
     memberSearchResult.innerHTML = '';
     groupchatForm.style.display = 'none';
@@ -33,6 +35,20 @@ function messageToMemberOpen() {
     adminDiv.innerHTML = '';
     memberDiv.innerHTML = '';
 }
+
+function createBtnTap() {
+    newGroup.innerHTML = '';
+    findMember.value = '';
+    memberSearchResult.innerHTML = '';
+    groupchatForm.style.display = 'none';
+    showMessage.style.display = 'none';
+    closeMember.style.display = 'none';
+    memberSearch.style.display = 'none';
+    ownerDiv.innerHTML = '';
+    adminDiv.innerHTML = '';
+    memberDiv.innerHTML = '';
+}
+
 
 const memberPrint = (member, isAdmin, isOwner) => {
     let memberHTML = `

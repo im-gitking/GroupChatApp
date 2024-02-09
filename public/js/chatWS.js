@@ -39,18 +39,22 @@ const displayMessages = (obj) => {
     const userID = parseJwt(token).userID;
 
     obj.forEach(msg => {
+        msg.class = 'message-container';
         if (msg.id === userID) {
-            msg.from = 'You'
+            msg.from = 'You';
+            msg.class = 'message-container my-message';
         }
 
         let imageElm = '';
         // console.log(msg.image);
         if (msg.image) {
-            imageElm = `<img src="${msg.image}" alt="">`;
+            imageElm = `<div class="messageImage"><img src="${msg.image}"></div>`;
         }
 
-        showMessage.innerHTML += `<div class="message-container">${imageElm}<p><span>${msg.from}:</span> ${msg.textmsg}</p></div>`;
-    });
+        showMessage.innerHTML += `<div class="${msg.class}">
+        <div class="userName">${msg.from}:</div>
+        ${imageElm}
+        <p> ${msg.textmsg}</p></div>`;    });
 }
 
 // Display All Messages

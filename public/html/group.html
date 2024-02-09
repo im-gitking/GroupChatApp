@@ -5,18 +5,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Group Chat App</title>
+    <link rel="stylesheet" href="../css/main.css">
 </head>
 
 <body>
-    <main>
-        <div class="createGroup">
-            <button>Create Group</button>
-
-            <div class="newGroup"></div>
+    <header>
+        <div class="head-container">
+            <div class="logo">
+                <img src="http://vectips.com/wp-content/uploads/2020/08/tutorial-preview-small-2.png" alt="" srcset="">
+                <span>Group Chat App</span>
+            </div>
+            <button class="createGroup">Create Group</button>
         </div>
-        <div class="groupDetails">
-            <div class="groupName"></div>
-            <div class="groupMembersCount" style="cursor:pointer;"></div>
+    </header>
+    <main>
+        <!-- Left sidebar -->
+        <div class="left-sidebar show-group-list">
+            <div class="groupLists">
+                <div class="joinedGroups" style="cursor:pointer;"></div>
+            </div>
+        </div>
+
+        <!-- Right sidebar -->
+        <div class="right-sidebar activity-area">
+            <!-- new group create form -->
+            <div class="newGroup"></div>
+
+            <!-- view active group -->
+            <div class="groupDetails">
+                <div class="groupName"></div>
+                <div class="groupMembersCount" style="cursor:pointer;"></div>
+                <div class="groupLink"></div>
+            </div>
+
+            <!-- members list -->
             <div class="members" style="cursor:pointer;">
                 <div class="member">
                     <button class="closeMember" style="display: none;">Close</button>
@@ -24,31 +46,27 @@
                         <input type="text" name="findMember" id="findMember" required>
                         <input type="submit" value="Search">
                     </form>
+
                     <div class="memberSearchResult"></div>
                     <div class="owner-div"></div>
                     <div class="admin-div"></div>
                     <div class="member-div"></div>
                 </div>
             </div>
-            <div class="groupLink"></div>
 
+
+            <!-- show messages -->
             <div class="showMessage"></div>
-        </div>
-        <div class="groupForm">
-            <form action="/" class="chatForm" style="display: none;" enctype="multipart/form-data">
-                <label for="message">Type Message:</label>
-                <input type="text" name="message" id="message">
-                <label for="uploadFile">+</label>
-                <input type="file" id="uploadFile" name="uploadFile" multiple="true" accept="image/*" />
-                <input type="submit" value="Send" id="sendBtn">
-            </form>
-        </div>
-        <div class="groupLists">
-            <h1>Joined Groups:</h1>
 
-            <div class="joinedGroups" style="cursor:pointer;"></div>
+                <form action="/" class="chatForm groupForm" style="display: none;" enctype="multipart/form-data">
+                    <label for="message"></label>
+                    <input type="text" name="message" id="message">
+                    <label for="uploadFile">+</label>
+                    <input type="file" id="uploadFile" name="uploadFile" multiple="true" accept="image/*" />
+                    <input type="submit" value="Send" id="sendBtn">
+            </div>
+
         </div>
-        <button type="button" class="clicme">Click Me!</button>
     </main>
 </body>
 

@@ -1,6 +1,7 @@
-const createBtn = document.querySelector('.createGroup button');
+const createBtn = document.querySelector('.createGroup');
 const joinedGroups = document.querySelector('.joinedGroups');
 const groupchatForm = document.querySelector('.chatForm');
+const newGroup = document.querySelector('.newGroup')
 
 // Add Group in Joined Section
 const addGroupInList = (groupObj) => {
@@ -67,7 +68,11 @@ joinedGroups.addEventListener('click', async (e) => {
 // Create new group
 createBtn.addEventListener('click', async (e) => {
     try {
-        const newGroup = document.querySelector('.newGroup');
+        createBtnTap();
+        document.querySelector('.groupName').innerHTML = '';
+        document.querySelector('.groupMembersCount').innerHTML = '';
+        document.querySelector('.groupLink').innerHTML = '';
+        document.querySelector('.newGroup').innerHTML = '';
         newGroup.innerHTML = `
         <div>
             <form class="createForm">
