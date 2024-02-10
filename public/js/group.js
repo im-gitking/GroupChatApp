@@ -161,19 +161,22 @@ async function joinFinish() {
     }
 }
 
-// group link copy
 function groupLinkCopy() {
-    var copyText = document.getElementById("group-link");
+    var copyText = document.getElementById("group-link").value;
 
-    // Change input type to 'text'
-    copyText.type = 'text';
+    // Create a temporary textarea
+    var tempTextarea = document.createElement("textarea");
+    tempTextarea.value = copyText;
+    document.body.appendChild(tempTextarea);
 
-    // Select the text field
-    copyText.select();
-    copyText.setSelectionRange(0, 99999);
-    copyText.type = 'hidden';
-    navigator.clipboard.writeText(copyText.value);
+    // Select and copy the text
+    tempTextarea.select();
+    document.execCommand("copy");
+
+    // Clean up: remove the temporary textarea
+    document.body.removeChild(tempTextarea);
 
     // Alert the user
-    alert("Group Link Copied: " + copyText.value);
+    alert("Group Link Copied: " + copyText);
 }
+
