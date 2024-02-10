@@ -20,7 +20,7 @@ const groupManager = (groupObj) => {
     groupNanme.innerHTML = `<h3>${groupObj.groupDetails.name}</h3>`;
     groupMembersCount.innerHTML = `<p>Members: ${groupObj.groupDetails.memberCount}</p>`;
     groupLink.innerHTML = `
-    <input type="hidden" value="http://localhost:3000/group/join/${groupObj.groupDetails.inviteLink}" id="group-link">
+    <input type="hidden" value="http://13.53.193.195:3000/group/join/${groupObj.groupDetails.inviteLink}" id="group-link">
     <button class="linkClipboard" onclick="groupLinkCopy()">📋</button>`;
 
 
@@ -44,7 +44,7 @@ joinedGroups.addEventListener('click', async (e) => {
         try {
             const groupId = e.target.id || e.target.parentElement.id;
             // console.log(groupId);
-            const groupData = await axios.get(`http://localhost:3000/group/openGroup/${groupId}`, { headers: { Authorization: token } });
+            const groupData = await axios.get(`http://13.53.193.195:3000/group/openGroup/${groupId}`, { headers: { Authorization: token } });
             // console.log(groupData.data);
 
             // highlight group name
@@ -99,7 +99,7 @@ createBtn.addEventListener('click', async (e) => {
         createForm.addEventListener('submit', async (e) => {
             try {
                 e.preventDefault();
-                const groupData = await axios.post(`http://localhost:3000/group/createGroup`, {
+                const groupData = await axios.post(`http://13.53.193.195:3000/group/createGroup`, {
                     groupName: groupName.value
                 }, { headers: { Authorization: token } });
                 // console.log(groupData.data);
@@ -118,7 +118,7 @@ createBtn.addEventListener('click', async (e) => {
 // Display joined groups
 document.addEventListener('DOMContentLoaded', async (e) => {
     try {
-        const getJoinedGroups = await axios.get(`http://localhost:3000/group/joinedGroups`, { headers: { Authorization: token } });
+        const getJoinedGroups = await axios.get(`http://13.53.193.195:3000/group/joinedGroups`, { headers: { Authorization: token } });
         // console.log(getJoinedGroups.data);
 
         if (getJoinedGroups.data.length !== 0) {
@@ -136,7 +136,7 @@ async function joinFinish() {
     try {
         if (localStorage.getItem('joinOp') === 'true') {
             const groupId = localStorage.getItem('groupId');
-            const groupData = await axios.get(`http://localhost:3000/group/openGroup/${groupId}`, { headers: { Authorization: token } });
+            const groupData = await axios.get(`http://13.53.193.195:3000/group/openGroup/${groupId}`, { headers: { Authorization: token } });
             // console.log(groupData.data);
 
             // highlight group name
