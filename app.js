@@ -11,7 +11,7 @@ const app = express();
 const server = require('http').createServer(app);
 const io = socketIo(server, {
     cors: {
-        origin: ['http://13.53.193.195:3000', 'https://admin.socket.io'],
+        origin: ['http://localhost:3000', 'https://admin.socket.io'],
         // origin: "*",
         methods: ["GET", "POST"],
         credentials: true

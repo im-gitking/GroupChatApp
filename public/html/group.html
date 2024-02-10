@@ -58,19 +58,18 @@
             <!-- show messages -->
             <div class="showMessage"></div>
 
-                <form action="/" class="chatForm groupForm" style="display: none;" enctype="multipart/form-data">
-                    <label for="message"></label>
-                    <input type="text" name="message" id="message">
-                    <label for="uploadFile">+</label>
-                    <input type="file" id="uploadFile" name="uploadFile" multiple="true" accept="image/*" />
-                    <input type="submit" value="Send" id="sendBtn">
-            </div>
+            <form action="/" class="chatForm groupForm" style="display: none;" enctype="multipart/form-data">
+                <label for="message"></label>
+                <input type="text" name="message" id="message">
+                <input type="file" id="uploadFile" name="uploadFile" multiple="true" accept="image/*" />
+                <input type="submit" value="Send" id="sendBtn">
+        </div>
 
         </div>
     </main>
 </body>
 
-<script src="http://13.53.193.195:3000/socket.io/socket.io.js"></script>
+<script src="http://localhost:3000/socket.io/socket.io.js"></script>
 <script src="../js/chatWS.js"></script>
 <script src="../js/group.js"></script>
 <script src="../js/admin.js"></script>

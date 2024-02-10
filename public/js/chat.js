@@ -6,7 +6,7 @@ const uploadFile = document.querySelector('#uploadFile');
 showMessage.style.display = 'none';
 
 // creating new Webscoket connection on this link
-const socket = io('http://13.53.193.195:3000', { auth: { token: token } });
+const socket = io('http://localhost:3000', { auth: { token: token } });
 
 let socketId = null;
 socket.on('connect', () => {
@@ -68,7 +68,7 @@ async function getmsgs() {
         // Get All Messages from API, if not stored in Localstorage
         if (!localStorage.getItem(`savedGroup${activeGroupId}`)) {
             console.log('getting MSG from API');
-            const AllTextMessages = await axios.get(`http://13.53.193.195:3000/chat/getText/${activeGroupId}`, { headers: { Authorization: token } });
+            const AllTextMessages = await axios.get(`http://localhost:3000/chat/getText/${activeGroupId}`, { headers: { Authorization: token } });
             console.log(AllTextMessages.data);
             displayMessages(AllTextMessages.data);
 
@@ -102,7 +102,7 @@ async function getmsgs() {
                 socket.emit('inbox-message', `I am sending: ${socket.id}`, 'roomName');
 
 
-                const newMsgs = await axios.post(`http://13.53.193.195:3000/chat/realTime/${localStorage.getItem('groupId')}`,
+                const newMsgs = await axios.post(`http://localhost:3000/chat/realTime/${localStorage.getItem('groupId')}`,
                     {
                         lastMsgId: +localStorage.getItem(`lastMsgIdOfGrp${localStorage.getItem('groupId')}`),
 
@@ -148,7 +148,7 @@ async function sendMessage(e) {
 
     try {
         e.preventDefault();
-        const sendMessageRes = await axios.post(`http://13.53.193.195:3000/chat/sendText`, {
+        const sendMessageRes = await axios.post(`http://localhost:3000/chat/sendText`, {
             message: messageText.value,
             id: activeGroupId
         }, { headers: { Authorization: token } });
@@ -174,7 +174,7 @@ async function sendMessage(e) {
             formData.append('image', uploadFile.files[0]);
             formData.append('groupId', activeGroupId);
 
-            const sendMessageRes = await axios.post('http://13.53.193.195:3000/chat/sendMessage', formData, {
+            const sendMessageRes = await axios.post('http://localhost:3000/chat/sendMessage', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': token

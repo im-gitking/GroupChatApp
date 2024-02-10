@@ -6,7 +6,7 @@ const uploadFile = document.querySelector('#uploadFile');
 showMessage.style.display = 'none';
 
 // creating new Webscoket connection on this link
-const socket = io('http://13.53.193.195:3000', { auth: { token: token } });
+const socket = io('http://localhost:3000', { auth: { token: token } });
 
 let socketId = null;
 socket.on('connect', () => {
@@ -39,10 +39,12 @@ const displayMessages = (obj) => {
     const userID = parseJwt(token).userID;
 
     obj.forEach(msg => {
+        msg.postion = 'message-box-left';
         msg.class = 'message-container';
         if (msg.id === userID) {
             msg.from = 'You';
             msg.class = 'message-container my-message';
+            msg.postion = 'message-box-right';
         }
 
         let imageElm = '';
@@ -51,10 +53,14 @@ const displayMessages = (obj) => {
             imageElm = `<div class="messageImage"><img src="${msg.image}"></div>`;
         }
 
-        showMessage.innerHTML += `<div class="${msg.class}">
+        showMessage.innerHTML += `<div class="${msg.postion}">
+        <div class="${msg.class}">
         <div class="userName">${msg.from}:</div>
         ${imageElm}
-        <p> ${msg.textmsg}</p></div>`;    });
+        <p> ${msg.textmsg}</p>
+        </div>
+        <div>`;
+    });
 }
 
 // Display All Messages
@@ -74,9 +80,9 @@ async function getmsgs() {
                 });
             });
             console.log(13, AllTextMessages);
-            
 
-            // const AllTextMessages = await axios.get(`http://13.53.193.195:3000/chat/getText/${activeGroupId}`, { headers: { Authorization: token } });
+
+            // const AllTextMessages = await axios.get(`http://localhost:3000/chat/getText/${activeGroupId}`, { headers: { Authorization: token } });
             console.log(14, AllTextMessages);
             displayMessages(AllTextMessages);
 
@@ -107,7 +113,7 @@ async function getmsgs() {
         // Realtime API calls for new message after 1 sec intervals
         intervalId = setInterval(async () => {
             try {
-                const newMsgs = await axios.post(`http://13.53.193.195:3000/chat/realTime/${localStorage.getItem('groupId')}`,
+                const newMsgs = await axios.post(`http://localhost:3000/chat/realTime/${localStorage.getItem('groupId')}`,
                     {
                         lastMsgId: +localStorage.getItem(`lastMsgIdOfGrp${localStorage.getItem('groupId')}`),
 
@@ -159,7 +165,7 @@ async function sendMessage(e) {
             formData.append('groupId', activeGroupId);
             formData.append('socketId', socketId);
 
-            const sendMessageRes = await axios.post('http://13.53.193.195:3000/chat/sendMessage', formData, {
+            const sendMessageRes = await axios.post('http://localhost:3000/chat/sendMessage', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': token
@@ -167,6 +173,9 @@ async function sendMessage(e) {
             });
             console.log(sendMessageRes.data);
             displayMessages(sendMessageRes.data);
+
+            messageText.value = '';
+            uploadFile.value = '';
         }
         else {
             alert('No message text or image to send...');
